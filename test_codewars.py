@@ -11,6 +11,7 @@ def browser():
     yield browser
     browser.quit()
 
+
 def test_login(browser):
     #opening the browser and clicking on the button
     browser.get("https://www.codewars.com/")
@@ -36,3 +37,18 @@ def test_login(browser):
     #check the response code
     response = requests.get(browser.current_url)
     assert response.status_code == 200, f"Expected - 200, but was {response.status_code}"
+
+def test_open_kata(browser):
+    #logging in
+    test_login(browser)
+
+    #clicking on the kata button after logging in
+    train_button = browser.find_element(By.XPATH, "/html/body/div[1]/div[1]/main/div[3]/div/div[1]/div[1]/div[2]/div[3]/button[1]")
+    train_button.click()
+    assert browser.current_url.startswith("https://www.codewars.com/kata/"), f"Expected to have the following URL - https://www.codewars.com/kata/, but was {browser.current_url}"
+
+    #saving test data
+    browser.implicitly_wait(10)
+    browser.save_screenshot("opened kata.png")
+    with open("opened url.txt", "w") as file:
+        file.write(browser.current_url)
